@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <title>COVID19 Dashboard</title>
+  </head>
+  <body>
+    <h1>COVID19 Dashboard</h1>
+
+    <form>
+      <div class="form-group">
+        <label for="groupFormControlSelect">Group</label>
+        <select class="form-control" id="groupFormControlSelect">
+            <option value="">Select a group</option>
+            [% FOREACH g IN data.groups.sort('Name') %]
+                <option value="[% g.Id %]">[% g.Name %]</option>
+            [% END %]
+        </select>
+      </div>
+    </form>
+
+    [% FOREACH g IN data.tickets.keys %]
+        <div id="[% g %]" class="ticket-table-div">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Subject</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                  [% FOREACH t IN data.tickets.$g %]
+                    [% SET id = t.id.split('ticket/').last %]
+                    <tr>
+                        <th scope="row">[% id %]</th>
+                        <th scope="row"><a href="https://ticket.bywatersolutions.com/Ticket/Display.html?id=[% id %]" target="_blank">[% t.Subject %]</a></th>
+                        <th scope="row">[% t.Status %]</th>
+                    </tr>
+                  [% END %]
+              </tbody>
+            </table>            
+        </div>
+    [% END %]
+    <script>
+        ( function($) {
+            jQuery( document ).ready(function() {
+                $(".ticket-table-div").hide();
+
+                $("#groupFormControlSelect").on('change', function(){
+                    $(".ticket-table-div").hide();
+
+                    const id = $(this).val();
+                    $(`#${id}`).show();
+                });
+            });
+        } ) ( jQuery );
+    </script>
+  </body>
+</html>
